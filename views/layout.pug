@@ -13,16 +13,16 @@ html(lang='en')
         div(class='col-sm-2')
           block sidebar
             ul(class='sidebar-nav')
-              li 
-                a(href='/') Home
-              li 
-                a(href='/create') Create new message
-              li
-                hr
-              li
-                a(href="/signup") Sign up
-              li
-                a(href="/signin") Sign in
+              li: a(href='/') Home
+              li: a(href='/create') Create new message
+              li: hr
+              if currentUser
+                li: strong Logged in as #{currentUser.name}
+                li: a(href="/member") Become a member
+                li: a(href="/logout") Log out
+              else
+                li: a(href="/signup") Sign up
+                li: a(href="/login") Sign in
                 
         div(class='col-sm-10')
           block content

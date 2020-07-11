@@ -1,13 +1,15 @@
 const router = require("express").Router();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
 
 const User = require("../models/user");
 const Message = require("../models/message");
+const { route } = require("./users");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
+  res.render("index", { title: "Members Only" });
 });
 
 // GET Signup page
@@ -70,16 +72,54 @@ router.post("/signup", [
         firstName,
         lastName,
         username,
-        password: hash
+        password: hash,
       });
       user.save((err) => {
         if (err) return next(err);
+        // req.login(user, (err) => {
+        //   if (err) return next(err);
+        // })
         res.redirect("/");
       });
-    })
-
-    
-  }
+    });
+  },
 ]);
+
+// GET login page
+router.get("/login", (req, res, next) => {
+  res.render("login", { title: "Log in" });
+});
+// POST login attempt
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+// GET member page
+router.get("/member", (req, res, next) => {
+  res.render("member", {
+    title: "Become a Member",
+  });
+});
+// POST member signup
+router.post("/member", [
+  // validate and sanitize password
+  // Compare to secret password (bcrypted)
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    // ... etc
+  },
+]);
+
+// GET Logout route
+router.get("/logout", (req, res, next) => {
+  req.logout();
+  res.redirect("/");
+})
 
 module.exports = router;
