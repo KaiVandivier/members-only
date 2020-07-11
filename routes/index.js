@@ -87,16 +87,29 @@ router.post("/signup", [
 
 // GET login page
 router.get("/login", (req, res, next) => {
-  res.render("login", { title: "Log in" });
+  res.render("login", {
+    title: "Log in",
+    flashErrors: req.flash("error"),
+  });
 });
 // POST login attempt
 router.post(
   "/login",
+  body("username").trim().escape(),
+  body("password").escape(),
   passport.authenticate("local", {
     successRedirect: "/",
+    successFlash: true,
     failureRedirect: "/login",
+    failureFlash: true,
   })
 );
+
+// GET Logout route
+router.get("/logout", (req, res, next) => {
+  req.logout();
+  res.redirect("/");
+})
 
 // GET member page
 router.get("/member", (req, res, next) => {
@@ -116,10 +129,5 @@ router.post("/member", [
   },
 ]);
 
-// GET Logout route
-router.get("/logout", (req, res, next) => {
-  req.logout();
-  res.redirect("/");
-})
 
 module.exports = router;

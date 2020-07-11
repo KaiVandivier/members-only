@@ -12,6 +12,7 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
+const flash = require("connect-flash");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -77,6 +78,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
+app.use(flash()); // Handle flash messages from passport
 // Populate views with currentUser
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;

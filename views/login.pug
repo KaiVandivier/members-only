@@ -22,7 +22,7 @@ block content
       )
     button.btn.btn-primary(type="submit") Log in
 
-  if errors
+  if flashErrors
     p: ul
-      each error in errors
-        li!= error.msg
+      each error in flashErrors
+        li!= error
