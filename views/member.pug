@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  h1= title
+  if !currentUser
+    p You must be logged in to become a member!
+
+  else
+    p Are you cool enough to be a member?
+    form(method="POST" action="")
+      .form-group 
+        label(for="memberCode") To become a member, enter the secret code:
+        input#memberCode.form-control(
+          type="password"
+          name="memberCode"
+          required
+        )
+      button.btn.btn-primary(type="submit") Submit
+
+    if errors
+      p: ul
+        for error in errors
+          li!= error

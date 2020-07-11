@@ -99,7 +99,6 @@ router.post(
   body("password").escape(),
   passport.authenticate("local", {
     successRedirect: "/",
-    successFlash: true,
     failureRedirect: "/login",
     failureFlash: true,
   })
@@ -119,11 +118,33 @@ router.get("/member", (req, res, next) => {
 });
 // POST member signup
 router.post("/member", [
-  // validate and sanitize password
-  // Compare to secret password (bcrypted)
-
+  body("memberCode").escape(),
   (req, res, next) => {
-    const errors = validationResult(req);
+    // Compare passcodes
+    bcrypt.compare(req.body.memberCode, process.env.MEMBER_HASH, (err, same) => {
+      if (err) return next(err);
+
+      // If wrong, rerender form with error: "That member code is incorrect."
+      if (!same) {
+        res.render("member", {
+          title: "Become a Member",
+          errors: ["That code is incorrect."],
+        })
+        return;
+      }
+
+      // If right, update user membership status
+      const { user } = req;
+      user.membership = "Member";
+      user.save((err) => {
+        if (err) return next(err);
+        res.redirect("/")
+      })
+
+      
+    })
+
+
 
     // ... etc
   },

@@ -6,3 +6,6 @@ block content
 
   if currentUser
     p Welcome back, #{currentUser.firstName}
+
+    if currentUser.membership === "Member"
+      p You are a member!
