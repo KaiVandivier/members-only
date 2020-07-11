@@ -1,0 +1,58 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method="POST" action="")
+    .form-group
+      label(for="firstName") First Name:
+      input#firstName.form-control(
+        type="text"
+        name="firstName"
+        placeholder="First Name"
+        value=(user ? user.firstName : "")
+        required
+      )
+
+    .form-group
+      label(for="lastName") Last Name:
+      input#lastName.form-control(
+        type="text"
+        name="lastName"
+        placeholder="Last Name"
+        value=(user ? user.lastName : "")
+        required
+      )
+
+    .form-group
+      label(for="username") Username:
+      input#username.form-control(
+        type="text"
+        name="username"
+        placeholder="Username"
+        value=(user ? user.username : "")
+        required
+      )
+
+    .form-group
+      label(for="password") Password:
+      input#password.form-control(
+        type="password"
+        name="password"
+        required
+      )
+
+    .form-group
+      label(for="confirmPassword") Confirm Password:
+      input#confirmPassword.form-control(
+        type="password"
+        name="confirmPassword"
+        required
+      )
+
+    button.btn.btn-primary(type="submit") Sign up
+
+  if errors
+    p: ul
+      each error in errors
+        li!= error.msg
