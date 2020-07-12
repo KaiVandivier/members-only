@@ -9,4 +9,10 @@ a {
   padding: 0;
   list-style: none; }
 
+.message {
+  background-color: rgba(0, 247, 255, 0.096);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 1rem; }
+
 /*# sourceMappingURL=style.css.map */

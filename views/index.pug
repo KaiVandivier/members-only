@@ -2,10 +2,20 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
 
   if currentUser
-    p Welcome back, #{currentUser.firstName}
+    p Welcome back, #{currentUser.firstName}.
+      if currentUser.membership === "Member"
+        |  You are a member!
+  else
+    p Log in to post a message, and become a member if you wish too see the author of each post!
 
-    if currentUser.membership === "Member"
-      p You are a member!
+  div
+    h3 Messages
+    each message in messages
+      .message
+        h4 !{message.title}
+        p !{message.text}
+        hr
+        em #{currentUser && currentUser.membership === "Member" ? message.author.name : "Anonymous"}
+          |  - #[date #{message.timestampFormatted}]

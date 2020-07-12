@@ -14,10 +14,10 @@ html(lang='en')
           block sidebar
             ul(class='sidebar-nav')
               li: a(href='/') Home
-              li: a(href='/create') Create new message
               li: hr
               if currentUser
                 li: strong Logged in as #{currentUser.name}
+                li: a(href='/message') Create new message
                 li: a(href="/member") Become a member
                 li: a(href="/logout") Log out
               else

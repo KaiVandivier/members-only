@@ -9,7 +9,14 @@ const { route } = require("./users");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("index", { title: "Members Only" });
+  // Get messages
+  Message.find().populate("author").sort({ timestamp: "descending" }).exec((err, messages) => {
+    if (err) return next(err);
+    res.render("index", {
+      title: "Members Only",
+      messages
+    })
+  })
 });
 
 // GET Signup page
@@ -108,7 +115,7 @@ router.post(
 router.get("/logout", (req, res, next) => {
   req.logout();
   res.redirect("/");
-})
+});
 
 // GET member page
 router.get("/member", (req, res, next) => {
@@ -121,34 +128,69 @@ router.post("/member", [
   body("memberCode").escape(),
   (req, res, next) => {
     // Compare passcodes
-    bcrypt.compare(req.body.memberCode, process.env.MEMBER_HASH, (err, same) => {
-      if (err) return next(err);
-
-      // If wrong, rerender form with error: "That member code is incorrect."
-      if (!same) {
-        res.render("member", {
-          title: "Become a Member",
-          errors: ["That code is incorrect."],
-        })
-        return;
-      }
-
-      // If right, update user membership status
-      const { user } = req;
-      user.membership = "Member";
-      user.save((err) => {
+    bcrypt.compare(
+      req.body.memberCode,
+      process.env.MEMBER_HASH,
+      (err, same) => {
         if (err) return next(err);
-        res.redirect("/")
-      })
 
-      
-    })
+        // If wrong, rerender form with error: "That member code is incorrect."
+        if (!same) {
+          res.render("member", {
+            title: "Become a Member",
+            errors: ["That code is incorrect."],
+          });
+          return;
+        }
 
-
-
-    // ... etc
+        // If right, update user membership status
+        const { user } = req;
+        user.membership = "Member";
+        user.save((err) => {
+          if (err) return next(err);
+          res.redirect("/");
+        });
+      }
+    );
   },
 ]);
 
+// GET Create message form
+router.get("/message", (req, res, next) => {
+  res.render("messageForm", {
+    title: "Create Message"
+  })
+});
+// POST Create message
+router.post("/message",
+  body("title", "Title is required").trim().notEmpty().escape(),
+  body("text", "Message text is required").trim().notEmpty().escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!req.user) return next(new Error("You must be logged in"));
+
+    const message = new Message({
+      title: req.body.title,
+      text: req.body.text,
+      author: req.user._id,
+    });
+
+    if (!errors.isEmpty()) {
+      // rerender form with errors
+      res.render("messageForm", {
+        title: "Create Message",
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    // Otherwise, save the new message and redirect home
+    message.save((err) => {
+      if (err) return next(err);
+      res.redirect("/");
+    })
+  }
+)
 
 module.exports = router;
