@@ -6,5 +6,5 @@ Anyone can read messages and users can post messages, but only users who enter a
 
 [Play around with it here](https://shrouded-plains-79392.herokuapp.com/)
 
-To become a member, the code is: `toocoolforschool`
-To try out a user with admin priveleges, sign in with the credentials username: `user1` password: `password1`
+- To become a member, the code is: `toocoolforschool`
+- To try out a user with admin priveleges, sign in with the credentials username: `user1` and password: `password1`
