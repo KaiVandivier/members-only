@@ -10,13 +10,16 @@ const { route } = require("./users");
 /* GET home page. */
 router.get("/", function (req, res, next) {
   // Get messages
-  Message.find().populate("author").sort({ timestamp: "descending" }).exec((err, messages) => {
-    if (err) return next(err);
-    res.render("index", {
-      title: "Members Only",
-      messages
-    })
-  })
+  Message.find()
+    .populate("author")
+    .sort({ timestamp: "descending" })
+    .exec((err, messages) => {
+      if (err) return next(err);
+      res.render("index", {
+        title: "Members Only",
+        messages,
+      });
+    });
 });
 
 // GET Signup page
@@ -158,11 +161,12 @@ router.post("/member", [
 // GET Create message form
 router.get("/message", (req, res, next) => {
   res.render("messageForm", {
-    title: "Create Message"
-  })
+    title: "Create Message",
+  });
 });
 // POST Create message
-router.post("/message",
+router.post(
+  "/message",
   body("title", "Title is required").trim().notEmpty().escape(),
   body("text", "Message text is required").trim().notEmpty().escape(),
   (req, res, next) => {
@@ -189,8 +193,18 @@ router.post("/message",
     message.save((err) => {
       if (err) return next(err);
       res.redirect("/");
-    })
+    });
   }
-)
+);
+// POST delete message
+router.get("/message/:id/delete", (req, res, next) => {
+  if (!req.user) return next(new Error("You must be logged in to do that."));
+  if (!req.user.admin)
+    return next(new Error("You need admin priveleges to do that."));
+  Message.deleteOne({ _id: req.params.id }, (err) => {
+    if (err) return next(err);
+    res.redirect("/");
+  });
+});
 
 module.exports = router;

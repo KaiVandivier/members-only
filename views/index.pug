@@ -7,6 +7,8 @@ block content
     p Welcome back, #{currentUser.firstName}.
       if currentUser.membership === "Member"
         |  You are a member!
+      else
+        |  Become a member to see who wrote the messages!
   else
     p Log in to post a message, and become a member if you wish too see the author of each post!
 
@@ -19,3 +21,6 @@ block content
         hr
         em #{currentUser && currentUser.membership === "Member" ? message.author.name : "Anonymous"}
           |  - #[date #{message.timestampFormatted}]
+        br
+        if currentUser && currentUser.admin
+          a(href=`/message/${message._id}/delete`) Delete
