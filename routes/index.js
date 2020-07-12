@@ -5,7 +5,6 @@ const passport = require("passport");
 
 const User = require("../models/user");
 const Message = require("../models/message");
-const { route } = require("./users");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -86,9 +85,9 @@ router.post("/signup", [
       });
       user.save((err) => {
         if (err) return next(err);
-        // req.login(user, (err) => {
-        //   if (err) return next(err);
-        // })
+        req.login(user, (err) => {
+          if (err) return next(err);
+        })
         res.redirect("/");
       });
     });
